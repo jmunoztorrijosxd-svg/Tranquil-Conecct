@@ -151,6 +151,8 @@
             <a href="#">Chats</a>
             <a href="#">Perfil</a>
             <a href="#">Configuración</a>
+            <!-- 🔥 BOTÓN NUEVO -->
+            <a href="{{ route('dashboard') }}">Dashboard</a>
             <!-- Botones Login y Registro -->
             <a href="{{ route('login') }}" class="btn-login">Login</a>
             <a href="{{ route('register') }}" class="btn-register">Registro</a>

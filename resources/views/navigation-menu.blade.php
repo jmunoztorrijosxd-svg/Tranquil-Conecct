@@ -17,6 +17,9 @@
                     </x-nav-link>
                 </div>
             </div>
+            <x-nav-link href="{{ route('user.index') }}" :active="request()->routeIs('user.index')">
+             {{ __('Usuario') }}
+            </x-nav-link>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Teams Dropdown -->
