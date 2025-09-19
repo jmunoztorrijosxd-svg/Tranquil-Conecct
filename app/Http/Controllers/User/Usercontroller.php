@@ -4,9 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Hash;
 
-class Usercontroller extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +17,6 @@ class Usercontroller extends Controller
     {
         $users = User::all();
         return view('User.index', compact('users'));
-
     }
 
     /**
@@ -23,15 +24,23 @@ class Usercontroller extends Controller
      */
     public function create()
     {
-        //
+        return view('User.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'Usuario creado correctamente ❤️');
     }
 
     /**
@@ -39,7 +48,7 @@ class Usercontroller extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view('User.show', compact('user'));
     }
 
     /**
@@ -47,15 +56,24 @@ class Usercontroller extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('User.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $validated = $request->validated();
+
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            // Solo actualizar password si el usuario envió uno nuevo
+            'password' => isset($validated['password']) ? Hash::make($validated['password']) : $user->password,
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'Usuario actualizado correctamente 💕');
     }
 
     /**
@@ -63,6 +81,8 @@ class Usercontroller extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return redirect()->route('user.index')->with('success', 'Usuario eliminado correctamente 🗑️');
     }
 }

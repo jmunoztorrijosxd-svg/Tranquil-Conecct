@@ -4,27 +4,53 @@
             {{ __('Usuarios') }}
         </h2>
     </x-slot>
-    
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
-                <table id="employees" class="display">
-                    <thead>
+
+    <div class="p-6">
+        {{-- Mostrar mensaje de éxito --}}
+        @if (session('success'))
+            <p class="text-green-600 mb-4">{{ session('success') }}</p>
+        @endif
+
+        {{-- Botón de nuevo usuario --}}
+        <a href="{{ route('user.create') }}" class="px-4 py-2 bg-green-600 text-white rounded">
+            Nuevo
+        </a>
+
+        {{-- Tabla con DataTables --}}
+        <div class="mt-6 bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
+            <table id="employees" class="display w-full">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($users as $u)
                         <tr>
-                            <th>Nombre</th>
-                            <th>Email</th>
+                            <td>{{ $u->id }}</td>
+                            <td>{{ $u->name }}</td>
+                            <td>{{ $u->email }}</td>
+                            <td class="space-x-2">
+                                {{-- Botón editar --}}
+                                <a href="{{ route('user.edit', $u) }}" class="text-blue-600 hover:underline">Editar</a>
+
+                                {{-- Botón eliminar --}}
+                                <form action="{{ route('user.destroy', $u) }}" method="POST" style="display:inline"
+                                    onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:underline">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $usuario)
-                            <tr>
-                                <td>{{ $usuario->name }}</td>
-                                <td>{{ $usuario->email }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </x-app-layout>

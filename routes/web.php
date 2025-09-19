@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\User\Usercontroller;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+Route::get('/formulario-especial', function () {
+    return view('formularios.registro');
+})->middleware(['auth', 'verified'])->name('formulario.especial');
+Route::post('/guardar-formulario', [FormController::class, 'guardar'])->name('mi.ruta.para.procesar');

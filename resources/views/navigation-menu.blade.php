@@ -21,6 +21,11 @@
              {{ __('Usuario') }}
             </x-nav-link>
 
+            <x-nav-link href="{{ route('formulario.especial') }}" :active="request()->routeIs('formulario.especial')">
+    {{ __('Formulario Especial') }}
+</x-nav-link>
+
+
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Teams Dropdown -->
                 @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
