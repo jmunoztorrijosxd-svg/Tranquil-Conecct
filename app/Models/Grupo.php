@@ -8,45 +8,48 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // Aseguramos el use del trait
 
 /**
  * Class Grupo
- * 
  * @property int $id_grupo
  * @property string $nombre
  * @property int $num_miembros
  * @property string $motivo_salida
- * 
- * @property Collection|ForoSocial[] $foro_socials
  * @property Collection|Pertenece[] $perteneces
  *
  * @package App\Models
  */
 class Grupo extends Model
 {
-	protected $table = 'grupo';
-	protected $primaryKey = 'id_grupo';
-	public $incrementing = false;
-	public $timestamps = false;
+    // Usamos HasFactory para poder usar Grupo::factory()
+    use HasFactory; // Usamos el use definido arriba
 
-	protected $casts = [
-		'id_grupo' => 'int',
-		'num_miembros' => 'int'
-	];
+    // ✅ CORRECCIÓN CLAVE: Le decimos a Laravel que la tabla se llama 'grupo' (singular), 
+    // y no 'grupos' (plural), para evitar el error 1146 (Table not found).
+    protected $table = 'grupo'; 
+    protected $primaryKey = 'id_grupo';
+    
+    // ✅ CORRECTO: La primary key es auto-incremental.
+    public $incrementing = true; 
+    public $timestamps = false; // Asumimos que no tienes created_at/updated_at
 
-	protected $fillable = [
-		'nombre',
-		'num_miembros',
-		'motivo_salida'
-	];
+    protected $casts = [
+        'id_grupo' => 'int',
+        'num_miembros' => 'int'
+    ];
 
-	public function foro_socials()
-	{
-		return $this->hasMany(ForoSocial::class, 'grupo_codigo_grupo');
-	}
+    // ✅ CRÍTICO PARA EL GUARDADO AJAX: Estos campos se pueden asignar masivamente.
+    protected $fillable = [
+        'nombre',
+        'num_miembros',
+        'motivo_salida'
+    ];
 
-	public function perteneces()
-	{
-		return $this->hasMany(Pertenece::class, 'codigo_grupo');
-	}
+    public function perteneces()
+    {
+        // Simplificamos la referencia a Pertenece::class. 
+        // Asumimos que Pertenece.php está en el mismo namespace (App\Models).
+        return $this->hasMany(Pertenece::class, 'codigo_grupo');
+    }
 }
