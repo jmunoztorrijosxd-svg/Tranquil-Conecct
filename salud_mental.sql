@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-09-2025 a las 21:14:51
+-- Tiempo de generación: 27-09-2025 a las 17:12:22
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -68,18 +68,6 @@ CREATE TABLE `cache` (
   `value` mediumtext NOT NULL,
   `expiration` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `cache`
---
-
-INSERT INTO `cache` (`key`, `value`, `expiration`) VALUES
-('0ff2fbbfc3c1a86c11888d6f92599bad', 'i:2;', 1757783608),
-('0ff2fbbfc3c1a86c11888d6f92599bad:timer', 'i:1757783608;', 1757783608),
-('7da8accde2bf335b289a48abfc280cd2', 'i:1;', 1758306881),
-('7da8accde2bf335b289a48abfc280cd2:timer', 'i:1758306881;', 1758306881),
-('jmunoztorrijosxd@gmail.com|::1', 'i:2;', 1757783609),
-('jmunoztorrijosxd@gmail.com|::1:timer', 'i:1757783609;', 1757783609);
 
 -- --------------------------------------------------------
 
@@ -195,8 +183,24 @@ CREATE TABLE `grupo` (
   `id_grupo` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `num_miembros` int(11) NOT NULL,
-  `motivo_salida` varchar(255) NOT NULL
+  `motivo_salida` varchar(255) NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `grupo`
+--
+
+INSERT INTO `grupo` (`id_grupo`, `nombre`, `num_miembros`, `motivo_salida`, `descripcion`) VALUES
+(2, 'Grupo de Programadores ', 15, 'Desarrollo de Apps', ''),
+(16, 'hola', 5, 'Ninguno', ''),
+(17, 'pollo', 6, 'Ninguno', ''),
+(18, 'tomate', 4, 'Ninguno', ''),
+(19, 'hola', 7, 'Ninguno', ''),
+(20, 'hola', 7, 'Ninguno', ''),
+(21, 'hola', 7, 'Ninguno', ''),
+(22, 'xd', 9, 'Ninguno', ''),
+(23, 'chuponner', 6, 'Ninguno', '');
 
 -- --------------------------------------------------------
 
@@ -341,6 +345,28 @@ CREATE TABLE `pertenece` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `psicologo`
+--
+
+CREATE TABLE `psicologo` (
+  `psicologo_id` int(11) NOT NULL COMMENT 'primary key',
+  `nombre` varchar(100) NOT NULL,
+  `especialidad` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `psicologo`
+--
+
+INSERT INTO `psicologo` (`psicologo_id`, `nombre`, `especialidad`, `email`) VALUES
+(1, 'Dr. Ana Gómez', 'Terapia Cognitivo-Conductual', 'ana.gomez@terapia.com'),
+(2, 'Lic. Juan Pérez', 'Psicología Clínica', 'juan.perez@citas.com'),
+(3, 'Dra. Laura Montes', 'Neuropsicología', 'laura.montes@neuro.com');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `reacciones`
 --
 
@@ -357,9 +383,16 @@ CREATE TABLE `reacciones` (
 
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
+  `nombre` enum('paciente','psicologo','administrador') NOT NULL,
   `descripcion` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'paciente', 'es un paciente');
 
 -- --------------------------------------------------------
 
@@ -381,10 +414,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('0UNAOMNK0b3mfPA4M2J0oDBHddNcmKan4Gzy3uu8', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiTlFrWGlpelR6UDc4VVN1eFB2WUJ5d21Ia25ta2sxaDRtQm9aa0g2OSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC91c2VyIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkZGloM3NzYzkwR2tFeDBYZDZaQ0JlLmxQZm5mL0ZVaGJZa3BxbG1sWTBpekdMN1gzU3FtMjIiO30=', 1758214988),
-('KA0pEFgXdYRK3ItqezO1votylSMM7LkTfIVg4CGQ', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiWDhpZHpRbzdlOWc1bVR6aExNMTdPZnYxYnpUVzlxUkJLWkxTdUl6ZyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC91c2VyIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkZGloM3NzYzkwR2tFeDBYZDZaQ0JlLmxQZm5mL0ZVaGJZa3BxbG1sWTBpekdMN1gzU3FtMjIiO30=', 1757797889),
-('NwlaH4CwIc1AWEkgcDEnnRXWUUnFHk6lpjMmbNrK', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiN0F5SGs4cnZOejFjQzhpbWpMRnJrMURLR2x5MGxKU3Npb05oWkhVbSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9mb3JtdWxhcmlvLWVzcGVjaWFsIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkZGloM3NzYzkwR2tFeDBYZDZaQ0JlLmxQZm5mL0ZVaGJZa3BxbG1sWTBpekdMN1gzU3FtMjIiO30=', 1758308473),
-('ryhyCxMHlC0w4XFJYDFvz2Q7Xs9U0aLbQRrUyeJP', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoicjFNS2wyMFB0cktSVTRlMmZIVXY3dnc4SEVSM3lYU3lwd09lTEgxZiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC91c2VyIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czozOiJ1cmwiO2E6MDp7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkZGloM3NzYzkwR2tFeDBYZDZaQ0JlLmxQZm5mL0ZVaGJZa3BxbG1sWTBpekdMN1gzU3FtMjIiO30=', 1757786536);
+('hedopzVtBf00uVKtHJCbshd1Z3GOA7TGagjrlpqV', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMEVjcTdEMkJNMjg1czc5OVFmR3UydlYwWGMxRlpYSWYwYlQ4ZUpqNSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1758985501),
+('qVpQd2T4PaX86fb4vBKJz8P15a7cUi7Nq2HjbLbJ', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoidWJUcmxHRFNUdFRsVjZ5N25ucDFyQUtrQkZZQVk0RjBzR25zbkZRWCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTIkZGloM3NzYzkwR2tFeDBYZDZaQ0JlLmxQZm5mL0ZVaGJZa3BxbG1sWTBpekdMN1gzU3FtMjIiO30=', 1758985208);
 
 -- --------------------------------------------------------
 
@@ -405,16 +436,18 @@ CREATE TABLE `users` (
   `current_team_id` bigint(20) UNSIGNED DEFAULT NULL,
   `profile_photo_path` varchar(2048) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `genero` enum('Masculino','Femenino','Otro') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `remember_token`, `current_team_id`, `profile_photo_path`, `created_at`, `updated_at`) VALUES
-(1, 'julian andres muñoz torrijos', 'jmunoztorrijosxd@gmail.com', NULL, '$2y$12$9WF2Z5cZclqT8hloQ0OgGOxxSz5zeqcaJUmySt.cR1wjhayLTGkhy', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-07 07:54:41', '2025-09-07 07:54:41'),
-(2, 'Tatiana', 'ta-tis84@gmail.com', NULL, '$2y$12$dih3ssc90GkEx0Xd6ZCBe.lPfnf/FUhbYkpqlmlY0izGL7X3Sqm22', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-13 22:22:43', '2025-09-13 22:22:43');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `two_factor_secret`, `two_factor_recovery_codes`, `two_factor_confirmed_at`, `remember_token`, `current_team_id`, `profile_photo_path`, `created_at`, `updated_at`, `genero`) VALUES
+(1, 'julian andres muñoz torrijos', 'jmunoztorrijosxd@gmail.com', NULL, '$2y$12$9WF2Z5cZclqT8hloQ0OgGOxxSz5zeqcaJUmySt.cR1wjhayLTGkhy', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-07 07:54:41', '2025-09-07 07:54:41', 'Masculino'),
+(2, 'Tatiana', 'ta-tis84@gmail.com', NULL, '$2y$12$dih3ssc90GkEx0Xd6ZCBe.lPfnf/FUhbYkpqlmlY0izGL7X3Sqm22', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-13 22:22:43', '2025-09-13 22:22:43', 'Femenino'),
+(3, 'simon', 'wazaaaainsano@gmail.com', NULL, '$2y$12$Xvcx8skgXreqeIrMnR3vkeT4aZ2o7TTd0Y4G1ubw2SjrS1NoviZNu', NULL, NULL, NULL, NULL, NULL, NULL, '2025-09-25 21:34:43', '2025-09-25 21:34:43', 'Masculino');
 
 -- --------------------------------------------------------
 
@@ -593,6 +626,12 @@ ALTER TABLE `pertenece`
   ADD KEY `codigo_grupo` (`codigo_grupo`);
 
 --
+-- Indices de la tabla `psicologo`
+--
+ALTER TABLE `psicologo`
+  ADD PRIMARY KEY (`psicologo_id`);
+
+--
 -- Indices de la tabla `reacciones`
 --
 ALTER TABLE `reacciones`
@@ -646,6 +685,12 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `grupo`
+--
+ALTER TABLE `grupo`
+  MODIFY `id_grupo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
 -- AUTO_INCREMENT de la tabla `jobs`
 --
 ALTER TABLE `jobs`
@@ -664,10 +709,22 @@ ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `psicologo`
+--
+ALTER TABLE `psicologo`
+  MODIFY `psicologo_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'primary key', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

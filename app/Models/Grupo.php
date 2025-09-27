@@ -8,7 +8,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory; // Aseguramos el use del trait
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Grupo
@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory; // Aseguramos el use del 
  * @property string $nombre
  * @property int $num_miembros
  * @property string $motivo_salida
+ * @property string $descripcion // <- Nuevo atributo añadido
  * @property Collection|Pertenece[] $perteneces
  *
  * @package App\Models
@@ -23,11 +24,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory; // Aseguramos el use del 
 class Grupo extends Model
 {
     // Usamos HasFactory para poder usar Grupo::factory()
-    use HasFactory; // Usamos el use definido arriba
+    use HasFactory;
 
     // ✅ CORRECCIÓN CLAVE: Le decimos a Laravel que la tabla se llama 'grupo' (singular), 
     // y no 'grupos' (plural), para evitar el error 1146 (Table not found).
-    protected $table = 'grupo'; 
+    protected $table = 'grupo';
     protected $primaryKey = 'id_grupo';
     
     // ✅ CORRECTO: La primary key es auto-incremental.
@@ -39,11 +40,12 @@ class Grupo extends Model
         'num_miembros' => 'int'
     ];
 
-    // ✅ CRÍTICO PARA EL GUARDADO AJAX: Estos campos se pueden asignar masivamente.
+    // ✅ CRÍTICO PARA EL GUARDADO AJAX: Se añade 'descripcion' a los campos asignables masivamente.
     protected $fillable = [
         'nombre',
         'num_miembros',
-        'motivo_salida'
+        'motivo_salida',
+        'descripcion' // <- ¡Añadido aquí!
     ];
 
     public function perteneces()

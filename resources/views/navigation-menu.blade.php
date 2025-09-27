@@ -5,7 +5,7 @@
                 <div class="shrink-0 flex items-center text-black text-xl font-extrabold tracking-widest">
                     <a href="{{ route('dashboard') }}" class="flex items-center">
                         <x-application-mark class="block h-9 w-auto text-black" />
-                        <span class="ml-2 hidden sm:block">Tranquil Connect</span>
+                        <span class="ml-2 hidden sm:block">𝑻𝒓𝒂𝒏𝒒𝒖𝒊𝒍 𝑪𝒐𝒏𝒏𝒆𝒄𝒕</span>
                     </a>
                 </div>
 
