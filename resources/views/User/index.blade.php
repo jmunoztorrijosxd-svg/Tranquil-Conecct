@@ -24,6 +24,8 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Email</th>
+                        {{-- AÑADIDO: Columna Género --}}
+                        <th>Género</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -33,6 +35,8 @@
                             <td>{{ $u->id }}</td>
                             <td>{{ $u->name }}</td>
                             <td>{{ $u->email }}</td>
+                            {{-- AÑADIDO: Celda Género --}}
+                            <td>{{ $u->genero }}</td> 
                             <td class="space-x-2">
                                 {{-- Botón editar --}}
                                 <a href="{{ route('user.edit', $u) }}" class="text-blue-600 hover:underline">Editar</a>
@@ -75,7 +79,15 @@ $(function() {
         language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
         },
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        // DataTables necesita saber la estructura de la tabla para las columnas.
+        // Ahora hay 5 columnas: ID, Nombre, Email, Género, Acciones.
+        columnDefs: [
+            // Oculta las acciones de la columna 4 (índice 4) en la exportación
+            { targets: 4, orderable: false, searchable: false }, 
+            // Esto asegura que DataTables tome correctamente todas las columnas
+            { targets: '_all', visible: true }
+        ]
     });
 });
 </script>

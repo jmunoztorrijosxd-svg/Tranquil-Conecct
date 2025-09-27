@@ -1,12 +1,12 @@
-<!DOCTYPE html
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tranquil_Connect 💙</title>
-<!-- PASO 1: AÑADIR META TAG PARA EL TOKEN CSRF (Obligatorio en Laravel para llamadas AJAX POST) -->
-<!-- Suponemos que la variable de Blade para el token está disponible -->
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
     /* Reset */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -46,7 +46,7 @@
     .btn-register:hover { background-color: #e64a19; }
 
     /* Main y secciones */
-    main, #grupos {
+    main, #grupos, #agendar, #foro_social {
         flex: 1;
         padding: 20px;
         position: relative;
@@ -54,8 +54,8 @@
 
     /* Tarjetas de Inicio */
     #inicio {
-        display: flex;
-        flex-wrap: wrap;
+        display: flex; 
+        flex-wrap: wrap; 
         gap: 20px;
         justify-content: center;
     }
@@ -94,16 +94,103 @@
         border-radius: 20px;
     }
 
-    /* Lista de grupos centrada */
-    #grupos {
+    /* Estilos para las secciones ocultas */
+    #grupos, #agendar, #foro_social { 
         display: none;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start; 
         align-items: center;
         gap: 15px;
         animation: fadeIn 0.5s ease-in-out;
     }
 
+    #foro_social .content { 
+        max-width: 600px;
+        width: 100%;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    /* Estilos específicos de Agendar (Contenedor principal) */
+    #agendar {
+        display: flex; 
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    .agendar-message {
+        margin-top: 5px;
+        line-height: 1.6;
+        color: #333;
+        text-align: center;
+        max-width: 700px;
+    }
+
+    /* Estilos para la lista/tabla de psicólogos */
+    #psicologos-container {
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 10px; 
+    }
+
+    .psicologo-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    .psicologo-item:hover { background-color: #f0f8ff; transform: translateY(-2px); }
+
+    .psicologo-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+    }
+
+    .psicologo-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #0066cc;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .psicologo-details div {
+        line-height: 1.3;
+    }
+    .psicologo-details .nombre { font-weight: bold; color: #333; }
+    .psicologo-details .especialidad { font-size: 0.9rem; color: #4d9cff; }
+    .psicologo-details .email { font-size: 0.85rem; color: gray; }
+
+    .btn-agendar-psicologo {
+        background-color: #4CAF50; 
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .btn-agendar-psicologo:hover { background-color: #3e8e41; }
+
+    /* Estilos para Grupos */
     #grupo-lista {
         width: 100%;
         max-width: 500px;
@@ -168,7 +255,7 @@
         font-size: 2rem;
         border: none;
         cursor: pointer;
-        display: none; 
+        display: none;
         align-items: center;
         justify-content: center;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -202,8 +289,11 @@
     #modal-agregar .btn-cancel { background:#ccc; color:black; margin-left:10px; }
     #modal-agregar .btn-submit { background:#4CAF50; color:white; }
 </style>
+
 </head>
+
 <body>
+
 <header>
     <img src="{{ asset('images/tranquil_connect_new_logo.png') }}"
          onerror="this.onerror=null;this.src='https://placehold.co/130x130/4d9cff/ffffff?text=Logo';"
@@ -215,9 +305,10 @@
     <nav>
         <a href="#" id="btn-inicio" class="active">Inicio</a>
         <a href="#" id="btn-grupos">Grupos</a>
-        <a href="#">Configuración</a>
+        <a href="#" id="btn-agendar">Agendar</a>
+        <a href="#" id="btn-foro_social">Foro social</a>
         @auth
-            <a href="{{ route('dashboard') }}">Dashboard</a>
+            <a href="{{ route('dashboard') }}">Registros</a>
         @endauth
         @guest
             <a href="{{ route('login') }}" class="btn-login">Login</a>
@@ -226,69 +317,68 @@
     </nav>
 </header>
 
-<!-- Inicio -->
 <main id="inicio">
     <div class="card">
-        <div class="card-icon">+</div>
-        <h3>Documentation</h3>
+        <div class="card-icon">📄</div>
+        <h3>Documentacion</h3>
         <p>Encuentra toda la documentación de Tranquil Connect.</p>
     </div>
     <div class="card">
-        <div class="card-icon">+</div>
-        <h3>Community</h3>
+        <div class="card-icon">👥</div>
+        <h3>Comunidad</h3>
         <p>Únete a la comunidad y aprende junto a otros usuarios.</p>
     </div>
     <div class="card">
-        <div class="card-icon">0</div>
-        <h3>Support</h3>
+        <div class="card-icon">🛠️</div>
+        <h3>Soporte</h3>
         <p>Obtén ayuda rápida y sencilla con nuestro soporte.</p>
     </div>
     <div class="card">
-        <div class="card-icon">+</div>
-        <h3>Settings</h3>
+        <div class="card-icon">⚙️</div>
+        <h3>Configuracion</h3>
         <p>Configura tu cuenta y personaliza tu experiencia.</p>
     </div>
 </main>
 
-<!-- Grupos -->
 <section id="grupos">
     <div id="grupo-lista">
-        <!-- Data Estática de prueba (se reemplaza si la API funciona) -->
-        <div class="grupo-item">
-            <div class="grupo-avatar">G</div>
-            <div>
-                <div style="font-weight:bold;">Grupo Test</div>
-                <div style="font-size: 0.9rem; color: gray;">10 miembros</div>
-            </div>
         </div>
-        <div class="grupo-item">
-            <div class="grupo-avatar">G</div>
-            <div>
-                <div style="font-weight:bold;">Grupo de Programadores</div>
-                <div style="font-size: 0.9rem; color: gray;">15 miembros</div>
-            </div>
-        </div>
-        <div class="grupo-item">
-            <div class="grupo-avatar">T</div>
-            <div>
-                <div style="font-weight:bold;">Grupo de Terapia</div>
-                <div style="font-size: 0.9rem; color: gray;">7 miembros</div>
-            </div>
-        </div>
-        <div class="grupo-item">
-            <div class="grupo-avatar">I</div>
-            <div>
-                <div style="font-weight:bold;">Grupo de Intereses</div>
-                <div style="font-size: 0.9rem; color: gray;">22 miembros</div>
-            </div>
-        </div>
+</section>
+
+<section id="agendar">
+    <h2>Agendamiento de Citas con Psicólogos</h2>
+    <p class="agendar-message">
+        Selecciona un profesional de la lista de abajo para ver sus horarios disponibles y agendar tu sesión individual.
+    </p>
+
+    <div id="psicologos-container">
+        <p style='text-align:center; padding: 15px; color: gray;'>Presiona "Agendar" en el menú superior para cargar la lista.</p>
+    </div>
+    
+    <p style="margin-top: 25px; font-weight: bold; color: #0066cc; font-size: 0.9rem;">
+        *Revisa tu correo para confirmar los detalles de la sesión.
+    </p>
+</section>
+
+<section id="foro_social">
+    <div class="content">
+        <h2>Comunidad y Apoyo Mutuo</h2>
+        <p class="agendar-message">
+            Bienvenido al **Foro Social**. Aquí puedes conectar con otros usuarios, compartir experiencias, hacer preguntas y ofrecer apoyo en un entorno seguro y respetuoso.
+        </p>
+        
+        <a href="#" class="btn-citas-psicologo" style="background-color: #3399ff;" onclick="alert('¡Accediendo al Foro Social!'); return false;">
+            Explorar el Foro 💬
+        </a>
+        
+        <p style="margin-top: 25px; font-weight: bold; color: #0066cc; font-size: 0.9rem;">
+            Las reglas de la comunidad se aplican. Se promueve la empatía y el respeto.
+        </p>
     </div>
 </section>
 
-<!-- Botón flotante para agregar grupo -->
 <button id="btn-agregar-grupo">+</button>
 
-<!-- Modal para agregar grupo -->
 <div id="modal-agregar">
     <div class="modal-content">
         <h3>Agregar Grupo</h3>
@@ -308,33 +398,64 @@
 <script>
 const inicio = document.getElementById('inicio');
 const grupos = document.getElementById('grupos');
+const agendar = document.getElementById('agendar');
+const foroSocial = document.getElementById('foro_social'); 
+
 const btnInicio = document.getElementById('btn-inicio');
 const btnGrupos = document.getElementById('btn-grupos');
+const btnAgendar = document.getElementById('btn-agendar');
+const btnForoSocial = document.getElementById('btn-foro_social'); 
+
 const btnAgregar = document.getElementById('btn-agregar-grupo');
 const modal = document.getElementById('modal-agregar');
 const cerrarModal = document.getElementById('cerrar-modal');
 const formAgregarGrupo = document.getElementById('form-agregar-grupo');
+const psicologosContainer = document.getElementById('psicologos-container');
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
 
-// --- Event Listeners de Navegación ---
+function resetSections() {
+    inicio.style.display = 'none';
+    grupos.style.display = 'none';
+    agendar.style.display = 'none';
+    foroSocial.style.display = 'none';
+    btnAgregar.style.display = 'none';
+    document.querySelectorAll('nav a').forEach(a => {
+        if (!a.classList.contains('btn-login') && !a.classList.contains('btn-register') && !a.getAttribute('href').includes('dashboard')) {
+            a.classList.remove('active');
+        }
+    });
+}
+
 btnGrupos.addEventListener('click', e => {
     e.preventDefault();
-    inicio.style.display = 'none';
+    resetSections();
     grupos.style.display = 'flex';
-    btnInicio.classList.remove('active');
     btnGrupos.classList.add('active');
-    btnAgregar.style.display = 'flex'; 
+    btnAgregar.style.display = 'flex';
     cargarGrupos();
+});
+
+btnAgendar.addEventListener('click', e => {
+    e.preventDefault();
+    resetSections();
+    agendar.style.display = 'flex';
+    btnAgendar.classList.add('active');
+    cargarPsicologos();
+});
+
+btnForoSocial.addEventListener('click', e => {
+    e.preventDefault();
+    resetSections();
+    foroSocial.style.display = 'flex';
+    btnForoSocial.classList.add('active');
 });
 
 btnInicio.addEventListener('click', e => {
     e.preventDefault();
-    grupos.style.display = 'none';
+    resetSections();
     inicio.style.display = 'flex';
-    btnGrupos.classList.remove('active');
     btnInicio.classList.add('active');
-    btnAgregar.style.display = 'none'; 
 });
 
 btnAgregar.addEventListener('click', () => {
@@ -345,39 +466,94 @@ cerrarModal.addEventListener('click', () => {
     modal.style.display = 'none';
 });
 
-// --- Función para Cargar Grupos ---
-function cargarGrupos() {
-    // Usamos la URL relativa
-    fetch('/api/grupos/data') 
+// Función para cargar psicólogos con email
+function cargarPsicologos() {
+    psicologosContainer.innerHTML = "<p style='text-align:center; padding: 15px; color: gray;'>Cargando psicólogos de la base de datos...</p>";
+
+    fetch('/api/psicologos/data') 
     .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => {
-                let errorDetails = `HTTP error! status: ${response.status}. `;
-                try {
-                    const json = JSON.parse(text);
-                    errorDetails += json.message || 'Error desconocido del servidor.';
-                } catch {
-                    errorDetails += 'Respuesta no JSON o error de ruta (500/404).';
-                    console.error("Respuesta del servidor:", text);
-                }
-                throw new Error(errorDetails);
-            });
-        }
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
         return response.json();
     })
     .then(data => {
-        let contenedor = document.getElementById('grupo-lista');
-        contenedor.innerHTML = ""; // Limpia el contenido estático
-
+        psicologosContainer.innerHTML = "";
         if (data.length === 0) {
-            contenedor.innerHTML = "<p style='text-align:center; padding: 15px; color: gray;'>No hay grupos disponibles</p>";
+            psicologosContainer.innerHTML = "<p style='text-align:center; padding: 15px; color: gray;'>No hay psicólogos disponibles en la base de datos.</p>";
             return;
         }
+        data.forEach(psicologo => {
+            const item = document.createElement('div');
+            item.className = 'psicologo-item';
+            const inicial = psicologo.nombre ? psicologo.nombre.charAt(0) : '?';
+            item.innerHTML = `
+                <div class="psicologo-info">
+                    <div class="psicologo-avatar">${inicial}</div>
+                    <div class="psicologo-details">
+                        <div class="nombre">${psicologo.nombre}</div>
+                        <div class="especialidad">${psicologo.especialidad}</div>
+                        <div class="email">${psicologo.email || 'Sin email'}</div>
+                    </div>
+                </div>
+                <button class="btn-agendar-psicologo" 
+                        onclick="alert('Agendar cita con ${psicologo.nombre}. ID: ${psicologo.psicologo_id}. Esto abriría el formulario de agendamiento.');">
+                    Agendar
+                </button>
+            `;
+            psicologosContainer.appendChild(item);
+        });
+    })
+    .catch(err => {
+        console.error("Error al cargar los psicólogos, usando datos estáticos:", err);
+        const staticPsicologos = [
+            { nombre: "Dr. Ana Gómez", especialidad: "Terapia Cognitivo-Conductual", email: "ana@email.com" },
+            { nombre: "Lic. Juan Pérez", especialidad: "Psicología Clínica", email: "juan@email.com" },
+        ];
+        psicologosContainer.innerHTML = "";
+        staticPsicologos.forEach(psicologo => {
+            const item = document.createElement('div');
+            item.className = 'psicologo-item';
+            const inicial = psicologo.nombre.charAt(0);
+            item.innerHTML = `
+                <div class="psicologo-info">
+                    <div class="psicologo-avatar">${inicial}</div>
+                    <div class="psicologo-details">
+                        <div class="nombre">${psicologo.nombre} (Estático)</div>
+                        <div class="especialidad">${psicologo.especialidad}</div>
+                        <div class="email">${psicologo.email}</div>
+                    </div>
+                </div>
+                <button class="btn-agendar-psicologo" 
+                        onclick="alert('Agendar cita con ${psicologo.nombre} (Datos Estáticos)');">
+                    Agendar
+                </button>
+            `;
+            psicologosContainer.appendChild(item);
+        });
+        const warning = document.createElement('p');
+        warning.style = 'text-align:center; padding-top: 15px; color: red; font-size: 0.8rem;';
+        warning.innerHTML = '*Advertencia: No se pudieron cargar los datos reales del servidor (API: /api/psicologos/data).';
+        psicologosContainer.appendChild(warning);
+    });
+}
 
+// Función para cargar grupos
+function cargarGrupos() {
+    let contenedor = document.getElementById('grupo-lista');
+    contenedor.innerHTML = ""; 
+
+    fetch('/api/grupos/data')
+    .then(response => {
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        if (data.length === 0) {
+            contenedor.innerHTML = "<p style='text-align:center; padding: 15px; color: gray;'>No hay grupos disponibles (API)</p>";
+            return;
+        }
         data.forEach(grupo => {
             let div = document.createElement('div');
             div.className = 'grupo-item';
-            
             div.innerHTML = `
                 <div class="grupo-avatar">${grupo.nombre.charAt(0)}</div>
                 <div>
@@ -385,76 +561,49 @@ function cargarGrupos() {
                     <div style="font-size: 0.9rem; color: gray;">${grupo.num_miembros} miembros</div>
                 </div>
             `;
-            
             div.addEventListener('click', () => console.log("Abriste el grupo: " + grupo.nombre));
             contenedor.appendChild(div);
         });
     })
     .catch(err => {
-        console.error("Error al cargar los datos dinámicos del grupo:", err);
-        // Si la carga falla, la data estática se mantiene visible
+        console.error("Error al cargar los grupos, usando datos estáticos:", err);
+        contenedor.innerHTML = `
+            <div class="grupo-item"><div class="grupo-avatar">G</div><div><div style="font-weight:bold;">Grupo Test (Estático)</div><div style="font-size: 0.9rem; color: gray;">10 miembros</div></div></div>
+            <p style='text-align:center; padding-top: 15px; color: red; font-size: 0.8rem;'>*Advertencia: No se pudieron cargar los datos reales del servidor (API: /api/grupos/data).</p>
+        `;
     });
 }
 
-// --- Lógica: Manejar el envío del formulario con JavaScript (AJAX) ---
+// Manejo del formulario de agregar grupo
 formAgregarGrupo.addEventListener('submit', async function(e) {
     e.preventDefault();
-
     const nombre = document.getElementById('input-nombre-grupo').value;
     const num_miembros = document.getElementById('input-miembros-grupo').value;
-
     try {
         const response = await fetch('/grupos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken, 
-                // Aceptamos solo JSON para forzar a Laravel a no devolver HTML en errores 4xx/5xx
+                'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json',
             },
-            body: JSON.stringify({
-                nombre: nombre,
-                num_miembros: num_miembros,
-                motivo_salida: '' 
-            })
+            body: JSON.stringify({ nombre: nombre, num_miembros: num_miembros, motivo_salida: '' })
         });
-        
-        // Verificamos si la respuesta NO es exitosa (código 4xx o 5xx)
         if (!response.ok) {
-            
             if (response.status === 419) {
-                // Error específico de CSRF (Sesión expirada)
                 alert('Error de Seguridad (419): La sesión expiró. Recarga la página y vuelve a intentarlo.');
-                console.error('Error 419: Sesión expirada o token CSRF inválido.');
-                
             } else {
-                // Intentamos leer el JSON de error (validación, 403, 500)
                 let errorData = {};
-                try {
-                    errorData = await response.json(); 
-                } catch (jsonError) {
-                    // Si falla la lectura de JSON, es porque nos devolvió HTML (como el error 419/403)
-                    console.error("Respuesta del servidor no es JSON. Status:", response.status);
-                    alert(`Error ${response.status}: El servidor devolvió un error inesperado (no JSON). Revisa la consola y tu archivo de rutas/controlador.`);
-                    return;
-                }
-                
-                // Si logramos leer el JSON, mostramos el mensaje del servidor
+                try { errorData = await response.json(); } catch { alert(`Error ${response.status}: Servidor devolvió error inesperado.`); return; }
                 alert('Error al guardar el grupo: ' + (errorData.message || 'Error desconocido'));
-                console.error('Error al guardar el grupo:', errorData);
             }
-            return; // Detenemos la ejecución aquí si hay un error
+            return;
         }
-
-        // Si la respuesta es exitosa (response.ok es true)
-        const result = await response.json(); 
-        
+        await response.json();
         modal.style.display = 'none';
-        formAgregarGrupo.reset(); 
+        formAgregarGrupo.reset();
         cargarGrupos();
         alert("¡Grupo agregado con éxito!");
-        console.log("Grupo agregado con éxito:", result);
-
     } catch (error) {
         console.error('Error en la comunicación con el servidor:', error);
         alert('Hubo un error de conexión al agregar el grupo.');
@@ -462,8 +611,12 @@ formAgregarGrupo.addEventListener('submit', async function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    btnAgregar.style.display = 'none';
+    resetSections(); 
+    inicio.style.display = 'flex';
+    btnInicio.classList.add('active');
+    btnAgregar.style.display = 'none'; 
 });
 </script>
+
 </body>
 </html>

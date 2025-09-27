@@ -28,6 +28,24 @@
                             <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
                         </div>
 
+                        {{-- INICIO: Campo GÉNERO como Lista Desplegable --}}
+                        <div class="mt-4">
+                            <x-label for="genero" value="Género" />
+                            
+                            {{-- Usamos un select HTML estándar con clases de Tailwind (controlando errores de validación) --}}
+                            <select id="genero" name="genero" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full @error('genero') border-red-500 @enderror" required>
+                                <option value="" disabled selected>Selecciona tu género</option>
+                                <option value="Masculino" {{ old('genero') == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+                                <option value="Femenino" {{ old('genero') == 'Femenino' ? 'selected' : '' }}>Femenino</option>
+                                <option value="Otro" {{ old('genero') == 'Otro' ? 'selected' : '' }}>Otro</option>
+                            </select>
+
+                            @error('genero')
+                                <p class="text-sm text-red-600 mt-2">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        {{-- FIN: Campo GÉNERO --}}
+
                         <div class="mt-4">
                             <x-label for="password" value="Contraseña" />
                             <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />

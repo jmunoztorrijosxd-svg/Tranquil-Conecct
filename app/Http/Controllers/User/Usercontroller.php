@@ -38,6 +38,7 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'genero' => $validated['genero'], // ✅ CORREGIDO: Se toma el valor validado
         ]);
 
         return redirect()->route('user.index')->with('success', 'Usuario creado correctamente ❤️');
@@ -71,6 +72,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             // Solo actualizar password si el usuario envió uno nuevo
             'password' => isset($validated['password']) ? Hash::make($validated['password']) : $user->password,
+            'genero' => $validated['genero'], // ✅ CORREGIDO: Se toma el valor validado
         ]);
 
         return redirect()->route('user.index')->with('success', 'Usuario actualizado correctamente 💕');
